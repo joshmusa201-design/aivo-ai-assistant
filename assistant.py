@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 import subprocess 
 from tavily import TavilyClient
+import pyautogui
+import time
 
 # loading the apikey.
 load_dotenv()
@@ -19,8 +21,6 @@ def web_search(query: str):
     response = tavily_client.search(query)
     return response
 
-def find_app(access_file):
-    pass
 
 def current_weather(baby:str, village):
     # give me the current weather of a city and place
@@ -66,7 +66,7 @@ def open_file(directory, name_file, home_path=Path.home()):
     name = home_path / directory / name_file
 
     with open(name, "r") as f:
-        return f.read()
+        return subprocess [f.read()]
 
 # to create a file a file in any of the directoriies
 def create_file(folder, file_name, home_folder=Path.home()):
@@ -74,12 +74,11 @@ def create_file(folder, file_name, home_folder=Path.home()):
     file.touch()
     
 # to open any app in the system
-def open_apps(app_name):
-    try:
-        open_app = subprocess.Popen([app_name])
-    except FileNotFoundError : 
-        return "The system cannot find the app specified. It doesn't exist"
-    pass
+def open_apps(app_name: str):
+    that = pyautogui.press("win")
+    time.sleep(2)
+    we = pyautogui.write(app_name, interval=0.1)
+    fuck = pyautogui.press("enter")
 
 # to write to any file in any of the directories in the system as long as the directory and file exists
 def write_file(f_name, content, fold_name, obs=Path.home()):
@@ -92,9 +91,9 @@ def write_file(f_name, content, fold_name, obs=Path.home()):
         return "the folder does not exist does not exist"
 
 # to help me manage my time
-def calender():
+#def calender():
     #open my calender and help me access and schedule my calender
-    pass
+    #pass
 
 # Defining the function schema
 tools = [
