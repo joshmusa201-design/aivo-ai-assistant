@@ -326,7 +326,7 @@ def audio_callback(indata,frame, time, status):
     prediction = wake_model.predict(audio)
     # Check the confidence score for Hey Jarvis
     score = prediction.get("hey_jarvis", 0)
-    me = score > 0.5 
+    me = score > 0.3 
     if me:
         print("Hey Jarvis detected!")
         wake_word = True
@@ -391,7 +391,6 @@ completion = client.chat.completions.create(
 
 
 joshua = completion.choices[0].message
-message_content = completion.choices[0].message.content
 
 come = joshua.tool_calls
 
