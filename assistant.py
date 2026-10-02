@@ -430,7 +430,7 @@ if come:
             
 #Get final response with function results
 final_response = client.chat.completions.create(
-    model="meta-llama/Llama-3.1-8B-Instruct:deepinfra",
+    model="meta-llama/Llama-3.1-8B-Instruct",
     messages=messages
 )
 
