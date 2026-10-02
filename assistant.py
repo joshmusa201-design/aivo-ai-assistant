@@ -63,20 +63,22 @@ def current_weather(baby:str, village):
     
 # create a folder in the system
 def create_folder(folder_name, folder_location):
-    folder = Path.home() / folder_location / folder_name
-    folder.mkdir(exist_ok=True)
-    if folder.exists():
-        subprocess.run(["explorer", str(folder)])  # Open the folder in File Explorer (Windows)
-        return "folder created successfully"
-    else:
-        return "folder wasnt created successfully"
-    
+    try: 
+       folder = Path.home() / folder_location / folder_name
+       folder.mkdir(exist_ok=True)
+       if folder.exists():
+            subprocess.Popen(["explorer", str(folder)])  # Open the folder in File Explorer (Windows)
+            return "folder created successfully"
+       else:
+            return "folder wasnt created successfully"
+    except FileNotFoundError as e:
+        return f"Folder/directory not found: {e}"
 # open a file in the directory
 def open_file(directory, name_file, home_path=Path.home()):
     try:
         name = home_path / directory / name_file
         with open(name, "r") as f:
-            return f.read()
+            return subprocess.Popen(["notepad.exe", str(f)])  # Open the file in Notepad (Windows)
     except FileNotFoundError:
         return "File not found"
 
@@ -87,7 +89,7 @@ def create_file(folder, file_name, home_folder=Path.home()):
         file = home_folder / folder / file_name
         file.touch(exist_ok=True)  # Create the file if it doesn't exist
         
-        subprocess.run(["notepad.exe", str(file)])  # Open the file in Notepad (Windows)
+        subprocess.Popen(["notepad.exe", str(file)])  # Open the file in Notepad (Windows)
     
         if file.exists() == True:
             return "file created successfully"
@@ -98,11 +100,11 @@ def create_file(folder, file_name, home_folder=Path.home()):
 
 # to open any app in the system
 def open_apps(app_name: str):
-    that = pyautogui.press("win")
+    pyautogui.press("win")
     t.sleep(2)
-    we = pyautogui.write(app_name, interval=0.1)
-    fuck = pyautogui.press("enter")
-    return fuck
+    pyautogui.write(app_name, interval=0.1)
+    pyautogui.press("enter")
+    return f"{app_name} opened successfully."
 
 
 # to write to any file in any of the directories in the system as long as the directory and file exists
@@ -110,7 +112,7 @@ def write_file(f_name, content,fold_name, directfold_name, obs=Path.home(),):
     try:
         file = obs / directfold_name / fold_name / f_name
         file.write_text(content)
-        subprocess.run(["notepad.exe", str(file)])  # Open the file in Notepad (Windows)
+        subprocess.Popen(["notepad.exe", str(file)])  # Open the file in Notepad (Windows)
 
     
         if file.exists() == True:
@@ -313,8 +315,10 @@ print("Listening for Hey Jarvis...")
 
 # using sounddevice to capture audio from the microphone and process it in real-time and see if the wake word is detected (hey_jarvis)
 def audio_callback(indata,frame, time, status):
+    global wake_word
     if status:
         print(status)
+
 
     # Convert microphone audio to the format expected by openWakeWord
     audio = (indata[:, 0] * 32768).astype(np.int16)
@@ -325,7 +329,7 @@ def audio_callback(indata,frame, time, status):
     me = score > 0.5 
     if me:
         print("Hey Jarvis detected!")
-        wake_word == True
+        wake_word = True
 
 print("🤖 Jarvis is listening... Say 'Hey Jarvis'!")   
 
@@ -337,10 +341,9 @@ with sd.InputStream(
     blocksize=CHUNK_SIZE,
     callback=audio_callback,
 ):
-    while True:
-        if wake_word == False:
-            t.sleep(10)
-            break
+    while not wake_word:
+        t.sleep(0.1)  # Sleep briefly to reduce CPU usage
+        
 
 # using sounddevice to record audio from the microphone for a specified duration and sample rate
 fs = 16000  # Sample rate
@@ -354,7 +357,6 @@ print("Done!")
 # using pywhispercpp to transcribe the recorded audio into text
 
 from pywhispercpp.model import Model
-model_size = "large-v3"
 
 model = Model("base", language="en")
 trancribe = model.transcribe(my_recording.flatten())
@@ -372,7 +374,7 @@ client = InferenceClient(
 messages=[
         {
             "role": "system", 
-            "content": "you are a helpful assistant"
+            "content": "you are a helpful assistant, you have access to the following tools: web_search, current_weather, create_folder, open_file, create_file, write_file, open_apps. You can use these tools to help the user with their requests. If the user asks for information that requires a tool, you should call the appropriate tool with the necessary parameters. If the user asks for something that does not require a tool, you can respond directly."
         },
         {
             "role": "user",
@@ -439,12 +441,17 @@ reason =  final_response.choices[0].message.content
 # using pyttsx3 to convert these final response text into speech and play it back to the user
 engine = pyttsx3.init()
 
-voices = engine.getProperty('voices')
-for voice in voices:
-    print(f"Voice: {voice.name}, ID: {voice.id}")
-    engine.setProperty('voice', voice)  # Change to the second voice (index 1)
-    engine.say(reason)
-abz = engine.runAndWait()
+voices = engine.getProperty("voices")
+
+for i, voice in enumerate(voices):
+    print(f"{i}: {voice.name} - {voice.id}")
+
+engine.setProperty("voice", voices[0].id)
+
+engine.say(reason)
+engine.runAndWait()
+
+# whats wrong with you bro
 
 
 
