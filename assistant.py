@@ -106,9 +106,9 @@ def open_apps(app_name: str):
 
 
 # to write to any file in any of the directories in the system as long as the directory and file exists
-def write_file(f_name, content, fold_name, obs=Path.home()):
+def write_file(f_name, content,fold_name, directfold_name, obs=Path.home(),):
     try:
-        file = obs / fold_name / f_name
+        file = obs / directfold_name / fold_name / f_name
         file.write_text(content)
         subprocess.run(["notepad.exe", str(file)])  # Open the file in Notepad (Windows)
 
@@ -239,34 +239,37 @@ tools = [
     },
 
     {
-         "type": "function",
-        "function": {
-            "name": "write_file",
-            "description": "Write the specified content to a file inside a specified folder",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "f_name": {
-                        "type": "string", 
-                        "description": "The name of the file to write to, including its file extension if needed"
-                    },
-                    "content": {
-                        "type": "string",
-                        "description": "The text content to write into the file",
-                    },
-                    "fold_name": {
-                        "type": "string",
-                        "description": "The path to the folder containing the file."
-                    },
+    "type": "function",
+    "function": {
+        "name": "write_file",
+        "description": "Writes text content into a file located within a nested subfolder structure under the user's Home directory.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "f_name": {
+                    "type": "string", 
+                    "description": "The specific name of the file to create, including its extension (e.g., 'pen.txt')."
                 },
-                "required": ["f_name", "content", "fold_name"],
-                "additionalProperties": False, # strict mode requirement
+                "content": {
+                    "type": "string",
+                    "description": "The exact text content to write into the file."
+                },
+                "directfold_name": {
+                    "type": "string",
+                    "description": "The name of the top-level folder located directly inside the user's Home directory (e.g., 'joshua' inside 'user/lenovo'). Do not include paths, just the single folder name."
+                },
+                "fold_name": {
+                    "type": "string",
+                    "description": "The name of the nested subfolder located directly inside the top-level folder where the file lives (e.g., 'me' inside 'joshua'). Do not include paths, just the single folder name."
+                }
             },
-            "strict": True # set to strict mode.
+            "required": ["f_name", "content", "directfold_name", "fold_name"],
+            "additionalProperties": False
         },
-    },
+        "strict": True
+    }
+},
 
-    
     {
          "type": "function",
         "function": {
@@ -341,7 +344,7 @@ with sd.InputStream(
 
 # using sounddevice to record audio from the microphone for a specified duration and sample rate
 fs = 16000  # Sample rate
-duration = 7.0  # Seconds
+duration = 10.0  # Seconds
 
 print("Recording...")
 my_recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
@@ -413,7 +416,7 @@ if come:
         elif function_name == "create_file":
             result = create_file(function_args["folder"], function_args["file_name"])
         elif function_name == "write_file":
-            result = write_file(function_args["f_name"], function_args["content"], function_args["fold_name"])
+            result = write_file(function_args["f_name"], function_args["content"], function_args["fold_name"], function_args["directfold_name"])
         elif function_name == "open_apps":
             result = open_apps(function_args["app_name"])
         
@@ -427,19 +430,19 @@ if come:
             
 #Get final response with function results
 final_response = client.chat.completions.create(
-    model="deepseek-ai/DeepSeek-R1-0528",
-    messages=messages,
+    model="meta-llama/Llama-3.1-8B-Instruct:deepinfra",
+    messages=messages
 )
 
 reason =  final_response.choices[0].message.content
 
-# using pyttsx3 to convert the final response text into speech and play it back to the user
+# using pyttsx3 to convert these final response text into speech and play it back to the user
 engine = pyttsx3.init()
 
 voices = engine.getProperty('voices')
 for voice in voices:
     print(f"Voice: {voice.name}, ID: {voice.id}")
-    engine.setProperty('voice', "zira")  # Change to the second voice (index 1)
+    engine.setProperty('voice', voice)  # Change to the second voice (index 1)
     engine.say(reason)
 abz = engine.runAndWait()
 
