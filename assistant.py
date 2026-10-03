@@ -343,11 +343,10 @@ with sd.InputStream(
 ):
     while not wake_word:
         t.sleep(0.1)  # Sleep briefly to reduce CPU usage
-        
 
 # using sounddevice to record audio from the microphone for a specified duration and sample rate
 fs = 16000  # Sample rate
-duration = 10.0  # Seconds
+duration = 9.0  # Seconds
 
 print("Recording...")
 my_recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
@@ -450,7 +449,8 @@ engine.setProperty("voice", voices[0].id)
 engine.say(reason)
 engine.runAndWait()
 
-# finally done with this
+# ai voice assistant is now ready to help you with your tasks. You can ask it to perform various actions, such as searching the web, checking the weather, creating folders and files, opening applications, and more. Just say "Hey Jarvis" to activate it and give your command!
+
 
 
 

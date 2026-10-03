@@ -1,0 +1,10 @@
+pathlib
+dotenv
+huggingface_hub
+tavily
+pyautogui
+sounddevice
+numpy
+openWakeWord
+pyttsx3
+
