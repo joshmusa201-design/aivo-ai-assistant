@@ -88,3 +88,9 @@ Most importantly, I learned how AI tool/function calling works: the model doesn'
 * Faster inference
 * Better error handling
 * Memory
+
+## 🎥 Demo
+
+[Watch Jarvis Demo] [def]
+
+[def]: ./jarvis-demo.mp4
