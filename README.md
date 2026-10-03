@@ -84,12 +84,17 @@ Most importantly, I learned how AI tool/function calling works: the model doesn'
 
 * Continuous conversations
 * Better voice interaction
-* More tools
+* More tools 
 * Faster inference
 * Better error handling
 * Memory
+  
+## Demo_Jarvis🎥 
 
-## 🎥 Demo
+https://github.com/user-attachments/assets/6b619a41-45e2-4847-a774-5b9460131d87
 
-https://github.com/joshmusa201-design/jarvis-ai-assistant/blob/main/jarvis_demo.mp4
+
+
+
+  
 
