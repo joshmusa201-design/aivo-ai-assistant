@@ -91,5 +91,5 @@ Most importantly, I learned how AI tool/function calling works: the model doesn'
 
 ## 🎥 Demo
 
-https://github.com/user-attachments/assets/jarvis_demo.mp4
+https://github.com/joshmusa201-design/jarvis-ai-assistant/blob/main/jarvis_demo.mp4
 
