@@ -91,4 +91,4 @@ Most importantly, I learned how AI tool/function calling works: the model doesn'
 git stat
 ## 🎥 Demo
 
-<video src="./jarvis-demo.mp4" controls width="700"></video>
+<video src="./jarvis_demo.mp4" controls width="700"></video>
