@@ -450,7 +450,7 @@ engine.setProperty("voice", voices[0].id)
 engine.say(reason)
 engine.runAndWait()
 
-# whats wrong with you bro
+# finally done with this
 
 
 
